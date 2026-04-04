@@ -90,3 +90,38 @@ class AuthController:
                 db_manager.commit_mysql()
             except Exception as e:
                 db_manager.mysql_conn.rollback()
+
+    @staticmethod
+    def register_student(username, password, name, phone, dept, cgpa):
+        base = AuthController.register_base_user(username, password, 2, name)
+        if not base['success']: return base
+
+        try:
+            cursor = db_manager.get_mysql_cursor()
+            user_id = base['user_id']
+            cursor.execute("INSERT INTO USER_PHONE (user_id, phone) VALUES (%s, %s)", (user_id, phone))
+            cursor.execute("INSERT INTO STUDENT (user_id, dept, cgpa) VALUES (%s, %s, %s)", (user_id, dept, cgpa))
+            db_manager.commit_mysql()
+            log_activity("USER_REGISTRATION", user_id, f"Student {name} registered directly")
+            return {"success": True, "message": "Student account registered successfully"}
+        except Exception as e:
+            db_manager.mysql_conn.rollback()
+            return {"success": False, "message": str(e)}
+
+    @staticmethod
+    def register_company(username, password, name, phone, location, contact):
+        base = AuthController.register_base_user(username, password, 3, name)
+        if not base['success']: return base
+
+        try:
+            cursor = db_manager.get_mysql_cursor()
+            user_id = base['user_id']
+            cursor.execute("INSERT INTO USER_PHONE (user_id, phone) VALUES (%s, %s)", (user_id, phone))
+            cursor.execute("INSERT INTO COMPANY (user_id, name, location, contact) VALUES (%s, %s, %s, %s)", 
+                           (user_id, name, location, contact))
+            db_manager.commit_mysql()
+            log_activity("USER_REGISTRATION", user_id, f"Company {name} registered directly")
+            return {"success": True, "message": "Company account registered successfully"}
+        except Exception as e:
+            db_manager.mysql_conn.rollback()
+            return {"success": False, "message": str(e)}

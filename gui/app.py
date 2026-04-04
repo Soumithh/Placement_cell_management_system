@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from gui.login_frame import LoginFrame
+from gui.register_frame import RegisterFrame
 from gui.admin_dashboard import AdminDashboard
 from gui.student_dashboard import StudentDashboard
 from gui.company_dashboard import CompanyDashboard
@@ -32,6 +33,11 @@ class PlacementApp(ctk.CTk):
         self.clear_container()
         login_frame = LoginFrame(self.container, self)
         login_frame.grid(row=0, column=0, sticky="nsew")
+
+    def show_register(self):
+        self.clear_container()
+        register_frame = RegisterFrame(self.container, self)
+        register_frame.grid(row=0, column=0, sticky="nsew")
 
     def show_dashboard(self, user_info):
         self.current_user = user_info
